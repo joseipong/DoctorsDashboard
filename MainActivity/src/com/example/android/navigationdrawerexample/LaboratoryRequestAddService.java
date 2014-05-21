@@ -3,7 +3,6 @@ package com.example.android.navigationdrawerexample;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
@@ -11,6 +10,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -60,18 +62,44 @@ public class LaboratoryRequestAddService extends Activity {
 		ListView listview_services = (ListView) findViewById(R.id.servicesList);
 		final ArrayList<LabService> labservices;
 		labservices = db.getLabServices();
-		ArrayAdapter<LabService> array_adapter_lab_service = new ArrayAdapter<LabService>(this, android.R.layout.simple_list_item_2, android.R.id.text1, labservices){
+		ArrayAdapter<LabService> array_adapter_lab_service = new ArrayAdapter<LabService>(this, R.layout.service_info, R.id.code, labservices)
+				{
+			boolean[] checkedItems = new boolean[labservices.size()];
         	//method to override the getView method of ArrayAdapter, this changes the color of the text view
         	@Override
         	public View getView(int position, View convertView, ViewGroup parent) {
         		View view = super.getView(position, convertView, parent);
-        	    TextView text1 = (TextView) view.findViewById(android.R.id.text1);
-        	    TextView text2 = (TextView) view.findViewById(android.R.id.text2);
-        	    text1.setTextColor(Color.BLACK);
-        	    text2.setTextColor(Color.BLACK);
+        	    TextView text1 = (TextView) view.findViewById(R.id.code);
+        	    CheckBox checkbox = (CheckBox) view.findViewById(R.id.checkBox1);
+        	    checkbox.setTag(R.id.checkBox1, position);
+        	    OnCheckedChangeListener onCheckedListener = new OnCheckedChangeListener() {
+
+        	        @Override
+        	        public void onCheckedChanged(CompoundButton buttonView,
+        	                boolean isChecked) {
+
+        	            int position = (Integer) buttonView
+        	                    .getTag(R.id.checkBox1);
+        	      
+        	            if (isChecked) {
+        	                checkedItems[position] = true;
+
+        	            } 
+        	            else {
+        	            	checkedItems[position] = false;
+        	            }
+						
+
+        	        }
+        	    };
+        	    checkbox.setChecked(checkedItems[position]);
+        	    checkbox.setOnCheckedChangeListener(onCheckedListener);
+        	    //TextView text2 = (TextView) view.findViewById(android.R.id.text2);
+        	    //text1.setTextColor(Color.BLACK);
+        	    //text2.setTextColor(Color.BLACK);
         	    LabService labservice = labservices.get(position);
-        	    text1.setText(labservice.toString());
-        	    text2.setText(labservice.getLabSectionName());
+        	    text1.setText(labservice.toString() + "loooool");
+        	    //text2.setText(labservice.getLabSectionName());
         	    
         	    return view;
         	  }
