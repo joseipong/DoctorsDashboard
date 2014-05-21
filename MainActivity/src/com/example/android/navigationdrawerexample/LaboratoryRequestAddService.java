@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +24,8 @@ import android.widget.Toast;
 import com.example.database.LabServiceAdapter;
 import com.example.model.Department;
 import com.example.model.LabService;
+import com.example.model.Rest;
+import com.example.parser.DepartmentParser;
 
 public class LaboratoryRequestAddService extends Activity {
 	ArrayList<Department> departments;
@@ -53,11 +54,6 @@ public class LaboratoryRequestAddService extends Activity {
 		ArrayAdapter<Department> array_adapter = new ArrayAdapter<Department>(this, android.R.layout.simple_spinner_item, departments);
 		spinner_department.setAdapter(array_adapter);
 		*/
-		
-		Intent intent = getIntent();
-		final boolean[] checked = intent.getBooleanArrayExtra("CHECKED_SERVICES");
-		
-		
 		LabServiceAdapter db = new LabServiceAdapter(this);
 		
 		//Populate section name spinner
@@ -71,13 +67,9 @@ public class LaboratoryRequestAddService extends Activity {
 		ListView listview_services = (ListView) findViewById(R.id.servicesList);
 		final ArrayList<LabService> labservices;
 		labservices = db.getLabServices();
-		final boolean[] checkedItems = new boolean[labservices.size()];
-		for(int i = 0; i < checkedItems.length; i++){
-			checkedItems[i] = checked[i];
-		}
 		ArrayAdapter<LabService> array_adapter_lab_service = new ArrayAdapter<LabService>(this, R.layout.service_info, R.id.code, labservices)
 				{
-			
+			boolean[] checkedItems = new boolean[labservices.size()];
         	//method to override the getView method of ArrayAdapter, this changes the color of the text view
         	@Override
         	public View getView(int position, View convertView, ViewGroup parent) {
@@ -169,7 +161,6 @@ public class LaboratoryRequestAddService extends Activity {
 
 		  Button button = (Button) findViewById(R.id.addServicesButton);
 		  final ArrayList<LabService> labservices = services;
-		  //final boolean[] checkedservices = checked_services;
 		  button.setOnClickListener(new OnClickListener() {
 
 		   @Override
@@ -188,7 +179,6 @@ public class LaboratoryRequestAddService extends Activity {
 		      Toast.LENGTH_LONG).show();
 		    Bundle extras = new Bundle();
 		    extras.putStringArrayList("SERVICE_IDS", service_ids);
-		    //extras.putBooleanArray("CHECKED_SERVICES", checkedservices);
 		    Intent intent = new Intent(getApplicationContext(), LaboratoryRequest.class);
 		    intent.putExtras(extras);
 			startActivity(intent);
