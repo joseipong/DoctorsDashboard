@@ -3,19 +3,23 @@ package com.example.android.navigationdrawerexample;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.database.LabServiceAdapter;
 import com.example.model.Department;
@@ -34,7 +38,7 @@ public class LaboratoryRequestAddService extends Activity {
 		// Show the Up button in the action bar.
 		setupActionBar();
 		//department spinner
-		
+		/*
 		Rest rest = new Rest("GET",this, "");
 		rest.setURL(url_department);
 		rest.execute();
@@ -49,6 +53,7 @@ public class LaboratoryRequestAddService extends Activity {
 		Spinner spinner_department = (Spinner) findViewById(R.id.requestingDepartmentSpinner);
 		ArrayAdapter<Department> array_adapter = new ArrayAdapter<Department>(this, android.R.layout.simple_spinner_item, departments);
 		spinner_department.setAdapter(array_adapter);
+		*/
 		LabServiceAdapter db = new LabServiceAdapter(this);
 		
 		//Populate section name spinner
@@ -73,7 +78,7 @@ public class LaboratoryRequestAddService extends Activity {
         	    CheckBox checkbox = (CheckBox) view.findViewById(R.id.checkBox1);
         	    checkbox.setTag(R.id.checkBox1, position);
         	    OnCheckedChangeListener onCheckedListener = new OnCheckedChangeListener() {
-
+        	    	//stores checked values in a boolean array so that the listview knows which items are already checked even if it refreshes the listview
         	        @Override
         	        public void onCheckedChanged(CompoundButton buttonView,
         	                boolean isChecked) {
@@ -83,10 +88,16 @@ public class LaboratoryRequestAddService extends Activity {
         	      
         	            if (isChecked) {
         	                checkedItems[position] = true;
+        	                LabService labservice = labservices.get(position);
+        	                labservice.setSelected(true);
+        	                labservices.set(position, labservice);
 
         	            } 
         	            else {
         	            	checkedItems[position] = false;
+        	            	LabService labservice = labservices.get(position);
+        	                labservice.setSelected(false);
+        	                labservices.set(position, labservice);
         	            }
 						
 
@@ -98,13 +109,17 @@ public class LaboratoryRequestAddService extends Activity {
         	    //text1.setTextColor(Color.BLACK);
         	    //text2.setTextColor(Color.BLACK);
         	    LabService labservice = labservices.get(position);
-        	    text1.setText(labservice.toString() + "loooool");
+        	    text1.setText(labservice.toString());
         	    //text2.setText(labservice.getLabSectionName());
         	    
         	    return view;
-        	  }
+        	  } 
+        	
+        	
         	};
+        	
 		listview_services.setAdapter(array_adapter_lab_service);
+		checkButtonClick(labservices);
 		//System.out.println(labservices);
 	
 	}
@@ -141,5 +156,35 @@ public class LaboratoryRequestAddService extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+	 public void checkButtonClick(ArrayList<LabService> services) {
+
+		  Button button = (Button) findViewById(R.id.addServicesButton);
+		  final ArrayList<LabService> labservices = services;
+		  button.setOnClickListener(new OnClickListener() {
+
+		   @Override
+		   public void onClick(View v) {
+			   
+		    StringBuffer responseText = new StringBuffer();
+		    responseText.append("Services:\n");
+		    ArrayList<String> service_ids = new ArrayList<String>();
+		    for(LabService labservice: labservices){
+		    	if(labservice.isSelected()){
+		    		responseText.append(labservice.toString() + "\n");
+		    		service_ids.add(labservice.getServiceCode());
+		    	}
+		    }
+		    Toast.makeText(getApplicationContext(), responseText,
+		      Toast.LENGTH_LONG).show();
+		    Bundle extras = new Bundle();
+		    extras.putStringArrayList("SERVICE_IDS", service_ids);
+		    Intent intent = new Intent(getApplicationContext(), LaboratoryRequest.class);
+		    intent.putExtras(extras);
+			startActivity(intent);
+		   }
+		  });
+		  
+		 }
 
 }

@@ -140,6 +140,40 @@ public class LabServiceAdapter extends Data {
 		return sectionnames;
 	}
 	
+	public LabService getLabService(String service_id){
+		db = dbHandler.getReadableDatabase();
+		LabService labservice = new LabService();
+		String query = "SELECT service_id, name_section, name_service, section_code, opd, ipd FROM lab_service WHERE service_id = '" + service_id + "'";
+		try{
+			Cursor cursor = db.rawQuery(query, null);
+			if(cursor.moveToFirst()){
+				do {
+					labservice = new LabService(cursor.getString(cursor.getColumnIndex(SERVICE_ID)),
+							cursor.getString(cursor.getColumnIndex(SERVICE)),
+							cursor.getString(cursor.getColumnIndex(SECTION_CODE)),
+							cursor.getString(cursor.getColumnIndex(SECTION)),
+							cursor.getString(cursor.getColumnIndex(OPD)),
+							cursor.getString(cursor.getColumnIndex(IPD))
+							);
+					System.out.println(labservice);
+					//System.out.println(cursor.getString(cursor.getColumnIndexOrThrow(DEPT)));
+					
+				}while(cursor.moveToNext());
+				Log.d("LabServiceAdapter getLabService method", "successful");
+				db.close();
+				return labservice;
+			}
+			else{
+				return labservice;
+			}
+		}
+		catch(SQLException se) {
+			Log.d("LabServiceAdapter getLabService method",Log.getStackTraceString(se));
+			return labservice;
+		}
+		//return labservice;
+	}
+	
 	
 	
 }

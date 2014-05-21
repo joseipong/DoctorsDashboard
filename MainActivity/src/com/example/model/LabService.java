@@ -14,7 +14,8 @@ public class LabService
 	private String lab_section_name;
 	private String opd;
 	private String ipd;
-	int quantity;
+	private int quantity;
+	private boolean selected;
 	
 	public LabService()
 	{
@@ -25,6 +26,7 @@ public class LabService
 		opd = "";
 		setIpd("");
 		quantity = 0;
+		selected = false;
 	}
 	
 	public LabService(String servicecode, String sectioncode, String labservicename, String labsectionname, String opd, String ipd)
@@ -35,6 +37,7 @@ public class LabService
 		lab_section_name = labsectionname;
 		this.opd = "";
 		this.setIpd("");
+		selected = false;
 	}
 	
 	public void setServiceCode(String servicecode)
@@ -69,6 +72,10 @@ public class LabService
 		this.quantity = quantity;
 	}
 	
+	public void setSelected(boolean select){
+		selected = select;
+	}
+	
 	
 	public String getIpd(){
 		return this.ipd;
@@ -100,6 +107,10 @@ public class LabService
 
 	public int getQuantity(){
 		return quantity;
+	}
+	
+	public boolean isSelected(){
+		return selected;
 	}
 	
 	public String toString(){

@@ -1,25 +1,54 @@
 package com.example.android.navigationdrawerexample;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class LaboratoryRequest extends Activity {
+import com.example.database.LabServiceAdapter;
+import com.example.model.LabService;
 
+public class LaboratoryRequest extends Activity {
+	private LabService labservice;
+	private ArrayList<LabService> labservices;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_laboratory_request);
+		try{
+			Intent intent = getIntent();
+			ArrayList<String> service_ids = intent.getStringArrayListExtra("SERVICE_IDS");
+			//System.out.println(service_ids);
+			LabServiceAdapter db = new LabServiceAdapter(this);
+			labservices = new ArrayList<LabService>();
+			for(int i = 0; i < service_ids.size(); i++){
+				System.out.println(service_ids.get(i));
+				labservice = db.getLabService(service_ids.get(i));
+				labservices.add(labservice);
+			}
+			System.out.println(labservices);
+			ListView listview = (ListView) findViewById(R.id.servicesList);
+			ArrayAdapter<LabService> array_adapter = new ArrayAdapter<LabService>(this, android.R.layout.simple_list_item_1, labservices);
+			listview.setAdapter(array_adapter);
+		}
+		catch(Exception ex){
+			Log.d("Getting intent", "No intent available");
+		}
+		
+		
 		
 		// Show the Up button in the action bar.
 		setupActionBar();
-		ListView listview = (ListView) findViewById(R.id.servicesList);
+		//ListView listview = (ListView) findViewById(R.id.servicesList);
 	}
 
 	/**
