@@ -10,7 +10,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -39,6 +41,7 @@ public class LaboratoryRequest extends Activity {
 			ListView listview = (ListView) findViewById(R.id.servicesList);
 			ArrayAdapter<LabService> array_adapter = new ArrayAdapter<LabService>(this, android.R.layout.simple_list_item_1, labservices);
 			listview.setAdapter(array_adapter);
+			emptyList();
 		}
 		catch(Exception ex){
 			Log.d("Getting intent", "No intent available");
@@ -93,5 +96,25 @@ public class LaboratoryRequest extends Activity {
 		
 		Toast.makeText(this, "clicked add request", Toast.LENGTH_SHORT).show();
 	}
+	
+	public void emptyList() {
+
+		  Button button = (Button) findViewById(R.id.emptyListButtonLab);
+		  final ArrayList<LabService> labservices = new ArrayList<LabService>();
+		  button.setOnClickListener(new OnClickListener() {
+		
+		   @Override
+		   public void onClick(View v) {
+			   
+		    ListView listview = (ListView) findViewById(R.id.servicesList);
+		    ArrayAdapter<LabService> array_adapter = new ArrayAdapter<LabService>(getApplicationContext(), android.R.layout.simple_list_item_1, labservices);
+		    Toast.makeText(getApplicationContext(), "click",
+		      Toast.LENGTH_LONG).show();
+		    listview.setAdapter(array_adapter);
+		    
+		   }
+		  });
+		  
+		 }
 
 }
